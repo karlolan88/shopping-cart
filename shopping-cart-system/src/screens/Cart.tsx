@@ -1,15 +1,26 @@
 import React, { useContext } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { CartContext } from '../context/CartContext';
 import { ScreenProps } from '../navigation/types';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const CartScreen: React.FC<ScreenProps> = ({ navigation }) => {
-  const { cart, increaseQuantity, decreaseQuantity } = useContext(CartContext);
+  const cartContext = useContext(CartContext);
+
+  if (!cartContext) {
+    return <Text>Loading...</Text>;
+  }
+
+  const { cart, increaseQuantity, decreaseQuantity } = cartContext;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Your Cart</Text>
-
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Your Cart</Text>
+      </View>
       {cart.length === 0 ? (
         <Text style={styles.emptyCart}>Your cart is empty.</Text>
       ) : (
@@ -37,7 +48,12 @@ const CartScreen: React.FC<ScreenProps> = ({ navigation }) => {
       )}
 
       {cart.length > 0 && (
-        <Button title="Proceed to Checkout" onPress={() => navigation.navigate('Checkout')} />
+        <TouchableOpacity 
+          style={styles.checkoutButton} 
+          onPress={() => navigation.navigate('Checkout')}
+        >
+          <Text style={styles.buttonText}>Proceed to Checkout</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -47,16 +63,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
   },
-  header: {
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF0000', 
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  backButton: {
+    marginRight: 10,
+  },
+  headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#FFFFFF', 
   },
   emptyCart: {
     fontSize: 18,
     textAlign: 'center',
+    color: 'white',
     marginTop: 20,
   },
   cartItem: {
@@ -65,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     marginBottom: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF', 
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -86,19 +113,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#FF0000', 
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFFFFF', 
     fontSize: 16,
     fontWeight: 'bold',
   },
   quantity: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  checkoutButton: {
+    backgroundColor: '#FF0000', 
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
   },
 });
 
